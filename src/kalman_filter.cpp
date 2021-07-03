@@ -30,9 +30,7 @@ void KalmanFilter::Predict() {
 
 void KalmanFilter::Update(const VectorXd &z) {
   //Update the state by using Kalman Filter equations for LIDAR
-  VectorXd z_pred = H_ * x_;
-  VectorXd y = z - z_pred;
-  
+  VectorXd y = z - H_ * x_;
   UpdateMeasurement(y);
 }
 
@@ -44,30 +42,19 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   float vx = x_[2];
   float vy = x_[3];
 
-  //Checking the value is not zero
-  if(px == 0. && py == 0.)
-    return;
-  
-  float rho = sqrt(px*px + py*py);
-  float theta = atan2(py, px);
-  
-  //Checking the value is not zero
-  if (rho < 0.0001) {
-    rho = 0.0001;
-  } 
-  float rho_dot = (px*vx + py*vy) / rho;
-  
-
-  //Finding h(x)
-  VectorXd h = VectorXd(3); // h(x_)
+  double rho = sqrt(px*px + py*py);
+  double theta = atan2(py, px);
+  double rho_dot = (px*vx + py*vy) / rho;
+  VectorXd h = VectorXd(3);
   h << rho, theta, rho_dot;
-  VectorXd y = z-h;
-
-  //Normalize the angle between -pi to pi
-  while (y[1] < -M_PI)
-    y[1] += 2 * M_PI;
-  while (y[1] > M_PI)
-    y[1] -= 2 * M_PI;
+  VectorXd y = z - h;
+  while ( y(1) > M_PI || y(1) < -M_PI ) {
+    if ( y(1) > M_PI ) {
+      y(1) -= M_PI;
+    } else {
+      y(1) += M_PI;
+    }
+  }
 
   UpdateMeasurement(y);
 }
