@@ -46,12 +46,17 @@ Here is the main protocol that main.cpp uses for uWebSocketIO in communicating w
 ---
 ##  Result
 Dataset 1
+
 RMSE = [.0973, .0855, 0.4513, 0.4399]
+
 ![Dataset 1 result](image/data_set_01_V2.png)
 
 Dataset 2
+
 RMSE = [.0726, .0965, 0.4216, 0.4932]
+
 ![Dataset 2 result](image/data_set_02_V2.png)
+
 ---
 
 ## Other Important Dependencies
